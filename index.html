@@ -50,7 +50,6 @@
       padding-bottom: 104px;
     }
 
-    /* Top Header */
     .topbar {
       position: sticky;
       top: 0;
@@ -94,7 +93,6 @@
       padding: 0 8px;
     }
 
-    /* Step Dots */
     .step-bar {
       display: flex;
       gap: 6px;
@@ -111,7 +109,6 @@
       background: linear-gradient(90deg, var(--gold-2), var(--gold));
     }
 
-    /* Views */
     .view {
       display: none;
       padding: 14px 16px;
@@ -136,7 +133,6 @@
       margin: 16px 0 8px;
     }
 
-    /* Upload Box (Tab 1) */
     .upload-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -177,7 +173,6 @@
       margin: 0 auto;
     }
 
-    /* Video Preview Card (Tab 1 Active) */
     .preview-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -238,7 +233,6 @@
       padding: 6px 10px;
     }
 
-    /* Segmented Toggle */
     .seg-wrap {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -269,7 +263,6 @@
       color: var(--gold);
     }
 
-    /* Card Row */
     .card-box {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -284,7 +277,6 @@
       gap: 12px;
     }
 
-    /* Switch */
     .switch {
       position: relative;
       width: 48px;
@@ -336,7 +328,6 @@
       line-height: 1.4;
     }
 
-    /* Bottom Sticky CTA */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -376,7 +367,6 @@
       transform: scale(0.985);
     }
 
-    /* Subtitle Cards (Tab 2 & Tab 4) */
     .sub-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -462,7 +452,6 @@
       outline: none;
     }
 
-    /* Dubbing Style Option Cards (Tab 3) */
     .style-card {
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -519,7 +508,6 @@
       color: var(--text);
     }
 
-    /* Tab 5 Studio Player & Export */
     .studio-video-wrap {
       position: relative;
       background: #000;
@@ -583,7 +571,6 @@
       font-weight: 700;
     }
 
-    /* Modal */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -645,14 +632,12 @@
 <div class="toast" id="toast"></div>
 
 <div class="app">
-  <!-- Header -->
   <div class="topbar">
     <button class="icon-btn" id="backBtn" onclick="goBack()">‹</button>
     <div class="topbar-title" id="headerTitle">Select a video</div>
     <button class="icon-btn" onclick="openSettings()">⚙️</button>
   </div>
 
-  <!-- 5-Step Indicator -->
   <div class="step-bar">
     <div class="step-dot active" id="dot1"></div>
     <div class="step-dot" id="dot2"></div>
@@ -661,18 +646,16 @@
     <div class="step-dot" id="dot5"></div>
   </div>
 
-  <!-- ================= TAB 1: SELECT A VIDEO ================= -->
+  <!-- TAB 1 -->
   <div class="view active" id="view1">
     <input type="file" id="videoInput" accept="video/mp4,video/quicktime,video/x-matroska,video/*" hidden onchange="handleVideoSelect(event)" />
 
-    <!-- Empty Upload State -->
     <div class="upload-card" id="uploadCard" onclick="document.getElementById('videoInput').click()">
       <div class="upload-icon-wrap">📁+</div>
       <div class="upload-title">Choose Video from Device</div>
       <div class="upload-sub">Pick an MP4, MOV or MKV file stored on this phone. Nothing is uploaded until you continue.</div>
     </div>
 
-    <!-- Video Preview State -->
     <div id="previewSection" style="display:none;">
       <div class="section-label" style="margin-top:4px;">PREVIEW</div>
       <div class="preview-card">
@@ -690,14 +673,13 @@
       </div>
     </div>
 
-    <!-- Optional Quick Paste SRT/Script -->
     <div class="card-box" style="margin-top:14px;">
       <div class="row-between" onclick="togglePasteBox()" style="cursor:pointer;">
         <div style="font-size:13.5px;font-weight:600;color:var(--gold);">📝 ឬបិទភ្ជាប់អត្ថបទ / .SRT ផ្ទាល់ (Optional)</div>
         <span style="color:var(--muted);font-size:12px;">▼</span>
       </div>
       <div id="pasteBox" style="display:none;margin-top:10px;">
-        <textarea id="customSrtInput" rows="4" class="edit-input" placeholder="បិទភ្ជាប់អត្ថបទដើម ឬ SRT នៅទីនេះ (បើទុកទំនេរ ប្រព័ន្ធនឹងទាញចេញពីវីដេអូស្វ័យប្រវត្តិ)..."></textarea>
+        <textarea id="customSrtInput" rows="4" class="edit-input" placeholder="បិទភ្ជាប់អត្ថបទដើម ឬ SRT នៅទីនេះ..."></textarea>
       </div>
     </div>
 
@@ -729,7 +711,7 @@
     </div>
   </div>
 
-  <!-- ================= TAB 2: REVIEW ORIGINAL TEXT (SRT) ================= -->
+  <!-- TAB 2 -->
   <div class="view" id="view2">
     <div class="row-between" style="margin-bottom:12px;">
       <div style="font-size:20px;font-weight:700;">Review subtitles</div>
@@ -738,7 +720,7 @@
     <div id="origSubList"></div>
   </div>
 
-  <!-- ================= TAB 3: CHOOSE DUBBING STYLE ================= -->
+  <!-- TAB 3 -->
   <div class="view" id="view3">
     <div class="section-label" style="margin-top:4px;">SELECT DUBBING STYLE</div>
 
@@ -791,7 +773,7 @@
     </div>
   </div>
 
-  <!-- ================= TAB 4: REVIEW TRANSLATION (KHMER SRT) ================= -->
+  <!-- TAB 4 -->
   <div class="view" id="view4">
     <div class="row-between" style="margin-bottom:12px;">
       <div style="font-size:16px;font-weight:700;">អត្ថបទបកប្រែ SRT (<span id="tab4LangLabel">Khmer</span>)</div>
@@ -800,7 +782,7 @@
     <div id="transSubList"></div>
   </div>
 
-  <!-- ================= TAB 5: KHMER VOICE DUB & EXPORT ================= -->
+  <!-- TAB 5 -->
   <div class="view" id="view5">
     <div class="studio-video-wrap">
       <video id="finalVideo" playsinline controls></video>
@@ -810,8 +792,8 @@
     <div class="card-box">
       <div class="row-between">
         <div>
-          <div style="font-size:15px;font-weight:700;color:var(--gold);">🎙️ សំឡេងបញ្ចូលខ្មែរ ១០០%</div>
-          <div style="font-size:12.5px;color:var(--muted);margin-top:2px;" id="voiceStatusText">ចុចប៊ូតុងខាងក្រោមដើម្បីចាក់សំឡេងខ្មែរជាមួយវីដេអូ</div>
+          <div style="font-size:15px;font-weight:700;color:var(--gold);">🎙️ សំឡេង AI ខ្មែរ (External AI TTS)</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-top:2px;" id="voiceStatusText">ត្រៀមរួចរាល់</div>
         </div>
         <span class="lang-pill" id="finalLangBadge">KM-KH</span>
       </div>
@@ -839,45 +821,48 @@
         <button class="sec-btn gold-outline" onclick="downloadSrtFile('translated')">⬇️ ទាញយក Khmer .SRT</button>
         <button class="sec-btn" onclick="downloadSrtFile('original')">⬇️ ទាញយក Original .SRT</button>
       </div>
-
-      <div class="notice-box" style="margin-top:12px;">
-        <span style="color:var(--gold);">💡</span>
-        <span>លើ iPhone Safari៖ ពេលចុច <b>Download / Save</b> បើផ្ទាំង Share លោតឡើង សូមចុច <b>Save Video</b> ដើម្បីរក្សាទុកចូល <b>Photos App</b> ឬ <b>Save to Files</b>។</span>
-      </div>
     </div>
   </div>
 </div>
 
-<!-- Bottom Sticky Action Button -->
 <div class="bottom-bar" id="bottomBar">
   <div class="bottom-inner">
     <button class="cta-btn" id="mainCtaBtn" onclick="handleMainCta()">Transcript →</button>
   </div>
 </div>
 
-<!-- Language Picker Modal -->
 <div class="modal-backdrop" id="langModal" onclick="if(event.target===this)closeLangModal()">
   <div class="modal-sheet">
     <div class="row-between" style="margin-bottom:14px;">
-      <div style="font-size:17px;font-weight:700;">ជ្រើសរើសភាសាបកប្រែ (Target Language)</div>
+      <div style="font-size:17px;font-weight:700;">ជ្រើសរើសភាសាបកប្រែ</div>
       <button class="icon-btn" onclick="closeLangModal()">✕</button>
     </div>
     <div id="langList"></div>
   </div>
 </div>
 
-<!-- Settings / Gemini API Key Modal -->
+<!-- Settings Modal (External Khmer AI TTS URL) -->
 <div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this)closeSettings()">
   <div class="modal-sheet">
     <div class="row-between" style="margin-bottom:12px;">
       <div style="font-size:17px;font-weight:700;">⚙️ Somray AI Studio Settings</div>
       <button class="icon-btn" onclick="closeSettings()">✕</button>
     </div>
-    <div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px;">
-      បញ្ចូល <b>Gemini API Key</b> (ស្រេចចិត្ត) ដើម្បីឱ្យ AI ស្តាប់សំឡេងវីដេអូពិត និងបកប្រែ SRT មកជាភាសាខ្មែរធម្មជាតិ ១០០%៖
+
+    <div style="font-size:13px;color:var(--gold);font-weight:700;margin-bottom:6px;">
+      🎙️ Khmer AI TTS Endpoint URL (សំឡេង AI ផ្សេង)
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.45;margin-bottom:8px;">
+      ដាក់ URL សំឡេង AI របស់បង (ប្រើ <code>{text}</code> ដើម្បីដាក់អត្ថបទខ្មែរស្វ័យប្រវត្តិ)
+    </div>
+    <input type="text" id="aiTtsUrlInput" class="edit-input" placeholder="https://.../tts?text={text}" />
+
+    <div style="font-size:13px;color:var(--muted);line-height:1.5;margin:14px 0 6px;">
+      <b>Gemini API Key</b> (ស្រេចចិត្ត — សម្រាប់បកប្រែ SRT មកខ្មែរ)៖
     </div>
     <input type="password" id="apiKeyInput" class="edit-input" placeholder="AIzaSy..." />
-    <button class="cta-btn ready" style="margin-top:14px;" onclick="saveApiKey()">រក្សាទុក Settings</button>
+
+    <button class="cta-btn ready" style="margin-top:16px;" onclick="saveSettings()">រក្សាទុក Settings</button>
   </div>
 </div>
 
@@ -1236,11 +1221,35 @@
     showToast("📋 បានចម្លងអត្ថបទខ្មែរ!");
   }
 
-  // Tab 5 Khmer Voice Dubbing & Export (Khmer AI TTS Audio)
+  // External AI TTS Audio
   let dubInterval = null;
   let lastSpokenIdx = -1;
   let currentAudio = null;
   let isDubPlaying = false;
+  let unlockedAudioCtx = null;
+
+  function unlockIosAudio() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        if (!unlockedAudioCtx) unlockedAudioCtx = new AudioCtx();
+        if (unlockedAudioCtx.state === "suspended") {
+          unlockedAudioCtx.resume().catch(() => {});
+        }
+      }
+    } catch (e) {}
+  }
+
+  function getCustomAiTtsUrl(text) {
+    const rawUrl = (localStorage.getItem("somray_ai_tts_url") || "").trim();
+    if (!rawUrl) return "";
+    const encoded = encodeURIComponent(text);
+    if (rawUrl.includes("{text}")) {
+      return rawUrl.replace(/\{text\}/g, encoded);
+    }
+    const sep = rawUrl.includes("?") ? "&" : "?";
+    return `${rawUrl}${sep}text=${encoded}`;
+  }
 
   function setupStudioPlayer() {
     const fVid = document.getElementById("finalVideo");
@@ -1251,91 +1260,76 @@
       fVid.volume = keepMusic ? 0.25 : 0.0;
     }
     document.getElementById("liveSubCaption").textContent = subtitles[0]?.trans || "";
-    document.getElementById("voiceStatusText").textContent = "ត្រៀមរួចរាល់ — ចុច «ចាក់សំឡេង» ឬ «តេស្តសំឡេង»";
+    const hasAiUrl = !!(localStorage.getItem("somray_ai_tts_url") || "").trim();
+    document.getElementById("voiceStatusText").textContent = hasAiUrl
+      ? "✅ បានភ្ជាប់ Khmer AI TTS ផ្សេងរួចរាល់"
+      : "⚙️ សូមដាក់ Khmer AI TTS URL ក្នុង Settings (⚙️) ជាមុនសិន";
   }
 
-  function splitKhmerChunks(text, maxLen = 120) {
-    const clean = String(text || "").trim();
-    if (!clean) return [];
-    if (clean.length <= maxLen) return [clean];
-    const words = clean.split(/\s+/);
-    const chunks = [];
-    let cur = "";
-    for (const w of words) {
-      if ((cur + " " + w).trim().length > maxLen) {
-        if (cur) chunks.push(cur.trim());
-        cur = w;
-      } else {
-        cur = (cur + " " + w).trim();
-      }
-    }
-    if (cur) chunks.push(cur);
-    return chunks;
-  }
-
-  function speakText(text) {
+  async function speakText(text, onDone = null) {
     if (!text) return;
+    unlockIosAudio();
+
+    const statusEl = document.getElementById("voiceStatusText");
     const rate = parseFloat(document.getElementById("speechRate").value || "1.0");
-    const langCode = (targetLang.code || "KM-KH").split("-")[0].toLowerCase();
-    const chunks = splitKhmerChunks(text, 120);
+    const ttsUrl = getCustomAiTtsUrl(text);
 
     if (currentAudio) {
       currentAudio.pause();
       currentAudio = null;
     }
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+
+    if (!ttsUrl) {
+      statusEl.textContent = "⚙️ មិនទាន់មាន Khmer AI TTS URL — ចុច ⚙️ ដើម្បីដាក់ URL AI TTS ផ្សេង";
+      showToast("⚠️ សូមដាក់ Khmer AI TTS URL ក្នុង Settings (⚙️)");
+      if (onDone) onDone();
+      return;
     }
 
-    let cIdx = 0;
-    const playChunk = () => {
-      if (cIdx >= chunks.length) return;
-      const part = chunks[cIdx++];
-      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(langCode)}&q=${encodeURIComponent(part)}`;
-      const audio = new Audio(ttsUrl);
+    try {
+      statusEl.textContent = "⏳ កំពុងហៅសំឡេងពី Khmer AI TTS...";
+      const resp = await fetch(ttsUrl, { method: "GET" });
+      if (!resp.ok) {
+        throw new Error("HTTP " + resp.status);
+      }
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const audio = new Audio(blobUrl);
       audio.playsInline = true;
       audio.playbackRate = rate;
       currentAudio = audio;
 
       audio.onended = () => {
-        if (isDubPlaying || cIdx < chunks.length) playChunk();
+        URL.revokeObjectURL(blobUrl);
+        statusEl.textContent = "✅ ចាក់សំឡេង AI រួចរាល់!";
+        if (onDone) onDone();
       };
-
       audio.onerror = () => {
-        if ("speechSynthesis" in window) {
-          const utter = new SpeechSynthesisUtterance(part);
-          utter.lang = targetLang.speech || "km-KH";
-          utter.rate = rate;
-          utter.onend = () => playChunk();
-          window.speechSynthesis.speak(utter);
-        }
+        URL.revokeObjectURL(blobUrl);
+        statusEl.textContent = "❌ មិនអាចចាក់ File សំឡេងពី AI TTS បាន";
+        if (onDone) onDone();
       };
 
-      audio.play().catch(() => {
-        if ("speechSynthesis" in window) {
-          const utter = new SpeechSynthesisUtterance(part);
-          utter.lang = targetLang.speech || "km-KH";
-          utter.rate = rate;
-          window.speechSynthesis.speak(utter);
-        }
-      });
-    };
-
-    playChunk();
+      await audio.play();
+      statusEl.textContent = "🎙️ កំពុងនិយាយដោយ Khmer AI TTS...";
+    } catch (err) {
+      statusEl.textContent = "❌ ភ្ជាប់ AI TTS មិនបាន (" + (err.message || "Error") + ")";
+      if (onDone) onDone();
+    }
   }
 
   function testKhmerVoiceNow() {
+    unlockIosAudio();
     const sample = subtitles[0]?.trans || "សួស្តីបងដា នេះគឺជាសំឡេង AI ភាសាខ្មែរ។";
     document.getElementById("liveSubCaption").textContent = sample;
-    document.getElementById("voiceStatusText").textContent = "🔊 កំពុងតេស្តសំឡេង AI ខ្មែរ...";
     speakText(sample);
   }
 
   function playKhmerDubbing() {
+    unlockIosAudio();
     const fVid = document.getElementById("finalVideo");
     isDubPlaying = true;
     lastSpokenIdx = -1;
-    document.getElementById("voiceStatusText").textContent = "🔊 កំពុងចាក់សំឡេង AI ខ្មែរជាមួយវីដេអូ...";
 
     if (videoUrl) {
       fVid.muted = false;
@@ -1360,7 +1354,7 @@
         if (fVid.ended) {
           clearInterval(dubInterval);
           isDubPlaying = false;
-          document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេងខ្មែររួចរាល់!";
+          document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេង AI រួចរាល់!";
         }
       }, 250);
     } else {
@@ -1368,20 +1362,15 @@
       const playNext = () => {
         if (!isDubPlaying || idx >= subtitles.length) {
           isDubPlaying = false;
-          document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេងខ្មែររួចរាល់!";
+          document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេង AI រួចរាល់!";
           return;
         }
         const line = subtitles[idx].trans;
         document.getElementById("liveSubCaption").textContent = line;
-        const rate = parseFloat(document.getElementById("speechRate").value || "1.0");
-        const langCode = (targetLang.code || "KM-KH").split("-")[0].toLowerCase();
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(langCode)}&q=${encodeURIComponent(line)}`;
-        const audio = new Audio(ttsUrl);
-        audio.playbackRate = rate;
-        currentAudio = audio;
-        audio.onended = () => { idx++; playNext(); };
-        audio.onerror = () => { idx++; playNext(); };
-        audio.play().catch(() => { idx++; playNext(); });
+        speakText(line, () => {
+          idx++;
+          playNext();
+        });
       };
       playNext();
     }
@@ -1393,9 +1382,6 @@
     if (currentAudio) {
       currentAudio.pause();
       currentAudio = null;
-    }
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
     }
     const fVid = document.getElementById("finalVideo");
     if (fVid && !fVid.paused) fVid.pause();
@@ -1453,21 +1439,25 @@
 
   function openSettings() {
     document.getElementById("apiKeyInput").value = localStorage.getItem("somray_gemini_key") || "";
+    document.getElementById("aiTtsUrlInput").value = localStorage.getItem("somray_ai_tts_url") || "";
     document.getElementById("settingsModal").classList.add("open");
   }
   function closeSettings() {
     document.getElementById("settingsModal").classList.remove("open");
   }
-  function saveApiKey() {
-    const val = document.getElementById("apiKeyInput").value.trim();
-    if (val) {
-      localStorage.setItem("somray_gemini_key", val);
-      showToast("✅ បានរក្សាទុក Gemini API Key!");
-    } else {
-      localStorage.removeItem("somray_gemini_key");
-      showToast("បានលុប API Key");
-    }
+  function saveSettings() {
+    const keyVal = document.getElementById("apiKeyInput").value.trim();
+    const ttsUrlVal = document.getElementById("aiTtsUrlInput").value.trim();
+
+    if (keyVal) localStorage.setItem("somray_gemini_key", keyVal);
+    else localStorage.removeItem("somray_gemini_key");
+
+    if (ttsUrlVal) localStorage.setItem("somray_ai_tts_url", ttsUrlVal);
+    else localStorage.removeItem("somray_ai_tts_url");
+
+    showToast("✅ បានរក្សាទុក Settings!");
     closeSettings();
+    if (currentStep === 5) setupStudioPlayer();
   }
 
   function escapeHtml(str) {
@@ -1476,11 +1466,6 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
-  }
-
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
   }
 
   updateUI();
