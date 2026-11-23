@@ -563,13 +563,13 @@
       background: var(--surface);
       color: var(--text);
       font-family: inherit;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
     }
     .sec-btn.gold-outline {
       border-color: var(--border-gold);
@@ -822,9 +822,10 @@
         <span id="rateVal" style="font-size:12.5px;font-weight:700;color:var(--gold);">1.0x</span>
       </div>
 
-      <div class="action-grid">
-        <button class="sec-btn gold-outline" onclick="playKhmerDubbing()">▶️ ចាក់សំឡេងខ្មែរ</button>
-        <button class="sec-btn" onclick="stopKhmerDubbing()">⏹️ បញ្ឈប់សំឡេង</button>
+      <div class="action-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <button class="sec-btn gold-outline" onclick="playKhmerDubbing()">▶️ ចាក់សំឡេង</button>
+        <button class="sec-btn gold-outline" onclick="testKhmerVoiceNow()">🔊 តេស្តសំឡេង</button>
+        <button class="sec-btn" onclick="stopKhmerDubbing()">⏹️ បញ្ឈប់</button>
       </div>
     </div>
 
@@ -881,7 +882,6 @@
 </div>
 
 <script>
-  // State
   let currentStep = 1;
   let videoFile = null;
   let videoUrl = "";
@@ -899,7 +899,6 @@
     { flag: "🇯🇵", name: "Japanese", code: "JA-JP", speech: "ja-JP" }
   ];
 
-  // Default sample subtitles (replaced when video/paste/Gemini is used)
   let subtitles = [
     { start: 0, end: 3, orig: "不过味道比普通茶甜一些。", trans: "តែរសជាតិវាផ្អែមជាងតែធម្មតាបន្តិច។" },
     { start: 3, end: 6, orig: "你应该会喜欢。", trans: "ឯងប្រហែលជាចូលចិត្តហើយ។" },
@@ -983,7 +982,6 @@
     }
   }
 
-  // Tab 1 Functions
   function handleVideoSelect(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -1026,7 +1024,6 @@
       : "Notice: Gemini AI transcribes & translates with natural Khmer context";
   }
 
-  // Parse user pasted text or SRT into timeline blocks
   function parsePastedInput(raw) {
     const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
     const cleaned = lines.filter(l => !/^\d+$/.test(l) && !/-->/.test(l));
@@ -1075,7 +1072,6 @@
     }
   }
 
-  // Tab 2 Render & Edit
   function renderOrigSubtitles() {
     const container = document.getElementById("origSubList");
     container.innerHTML = subtitles.map((item, idx) => `
@@ -1117,7 +1113,6 @@
     renderOrigSubtitles();
   }
 
-  // Tab 3 Style & Language
   function selectDubStyle(style) {
     dubStyle = style;
     document.getElementById("styleCharacter").classList.toggle("selected", style === "character");
@@ -1155,7 +1150,6 @@
     closeLangModal();
   }
 
-  // Translation Engine (Uses Gemini API if key provided, else smart fallback/free translate)
   async function runTranslation() {
     const cta = document.getElementById("mainCtaBtn");
     cta.textContent = "⏳ កំពុងបកប្រែ SRT...";
@@ -1183,11 +1177,9 @@
       }
     }
 
-    // Fallback free translation endpoint for Khmer/Target Language
     const tl = targetLang.code.split("-")[0].toLowerCase();
     for (let i = 0; i < subtitles.length; i++) {
       const text = subtitles[i].orig;
-      // Keep pre-translated sample if untouched
       if (text === "不过味道比普通茶甜一些。" && tl === "km") continue;
       if (text === "你应该会喜欢。" && tl === "km") continue;
       if (text === "尝尝。" && tl === "km") continue;
@@ -1207,7 +1199,6 @@
     showToast("✅ បកប្រែ SRT រួចរាល់!");
   }
 
-  // Tab 4 Render & Edit Translation
   function renderTransSubtitles() {
     const container = document.getElementById("transSubList");
     container.innerHTML = subtitles.map((item, idx) => `
@@ -1245,9 +1236,11 @@
     showToast("📋 បានចម្លងអត្ថបទខ្មែរ!");
   }
 
-  // Tab 5 Khmer Voice Dubbing & Export
+  // Tab 5 Khmer Voice Dubbing & Export (Khmer AI TTS Audio)
   let dubInterval = null;
   let lastSpokenIdx = -1;
+  let currentAudio = null;
+  let isDubPlaying = false;
 
   function setupStudioPlayer() {
     const fVid = document.getElementById("finalVideo");
@@ -1255,33 +1248,106 @@
     if (videoUrl) {
       fVid.src = videoUrl;
       const keepMusic = document.getElementById("keepMusicToggle").checked;
-      fVid.volume = keepMusic ? 0.22 : 0.0;
+      fVid.volume = keepMusic ? 0.25 : 0.0;
     }
     document.getElementById("liveSubCaption").textContent = subtitles[0]?.trans || "";
+    document.getElementById("voiceStatusText").textContent = "ត្រៀមរួចរាល់ — ចុច «ចាក់សំឡេង» ឬ «តេស្តសំឡេង»";
+  }
+
+  function splitKhmerChunks(text, maxLen = 120) {
+    const clean = String(text || "").trim();
+    if (!clean) return [];
+    if (clean.length <= maxLen) return [clean];
+    const words = clean.split(/\s+/);
+    const chunks = [];
+    let cur = "";
+    for (const w of words) {
+      if ((cur + " " + w).trim().length > maxLen) {
+        if (cur) chunks.push(cur.trim());
+        cur = w;
+      } else {
+        cur = (cur + " " + w).trim();
+      }
+    }
+    if (cur) chunks.push(cur);
+    return chunks;
   }
 
   function speakText(text) {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = targetLang.speech || "km-KH";
-    utter.rate = parseFloat(document.getElementById("speechRate").value || "1.0");
+    if (!text) return;
+    const rate = parseFloat(document.getElementById("speechRate").value || "1.0");
+    const langCode = (targetLang.code || "KM-KH").split("-")[0].toLowerCase();
+    const chunks = splitKhmerChunks(text, 120);
 
-    const voices = window.speechSynthesis.getVoices();
-    const matchVoice = voices.find(v => v.lang.toLowerCase().includes(utter.lang.split("-")[0].toLowerCase()));
-    if (matchVoice) utter.voice = matchVoice;
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
 
-    window.speechSynthesis.speak(utter);
+    let cIdx = 0;
+    const playChunk = () => {
+      if (cIdx >= chunks.length) return;
+      const part = chunks[cIdx++];
+      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(langCode)}&q=${encodeURIComponent(part)}`;
+      const audio = new Audio(ttsUrl);
+      audio.playsInline = true;
+      audio.playbackRate = rate;
+      currentAudio = audio;
+
+      audio.onended = () => {
+        if (isDubPlaying || cIdx < chunks.length) playChunk();
+      };
+
+      audio.onerror = () => {
+        if ("speechSynthesis" in window) {
+          const utter = new SpeechSynthesisUtterance(part);
+          utter.lang = targetLang.speech || "km-KH";
+          utter.rate = rate;
+          utter.onend = () => playChunk();
+          window.speechSynthesis.speak(utter);
+        }
+      };
+
+      audio.play().catch(() => {
+        if ("speechSynthesis" in window) {
+          const utter = new SpeechSynthesisUtterance(part);
+          utter.lang = targetLang.speech || "km-KH";
+          utter.rate = rate;
+          window.speechSynthesis.speak(utter);
+        }
+      });
+    };
+
+    playChunk();
+  }
+
+  function testKhmerVoiceNow() {
+    const sample = subtitles[0]?.trans || "សួស្តីបងដា នេះគឺជាសំឡេង AI ភាសាខ្មែរ។";
+    document.getElementById("liveSubCaption").textContent = sample;
+    document.getElementById("voiceStatusText").textContent = "🔊 កំពុងតេស្តសំឡេង AI ខ្មែរ...";
+    speakText(sample);
   }
 
   function playKhmerDubbing() {
     const fVid = document.getElementById("finalVideo");
+    isDubPlaying = true;
     lastSpokenIdx = -1;
-    document.getElementById("voiceStatusText").textContent = "🔊 កំពុងចាក់សំឡេងខ្មែរស្របតាមវីដេអូ...";
+    document.getElementById("voiceStatusText").textContent = "🔊 កំពុងចាក់សំឡេង AI ខ្មែរជាមួយវីដេអូ...";
 
     if (videoUrl) {
+      fVid.muted = false;
       fVid.currentTime = 0;
       fVid.play().catch(() => {});
+
+      if (subtitles.length > 0) {
+        lastSpokenIdx = 0;
+        document.getElementById("liveSubCaption").textContent = subtitles[0].trans;
+        speakText(subtitles[0].trans);
+      }
+
       clearInterval(dubInterval);
       dubInterval = setInterval(() => {
         const t = fVid.currentTime;
@@ -1291,37 +1357,51 @@
           document.getElementById("liveSubCaption").textContent = subtitles[idx].trans;
           speakText(subtitles[idx].trans);
         }
-        if (fVid.ended) stopKhmerDubbing();
-      }, 200);
+        if (fVid.ended) {
+          clearInterval(dubInterval);
+          isDubPlaying = false;
+          document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេងខ្មែររួចរាល់!";
+        }
+      }, 250);
     } else {
-      // Sequential playback if user pasted SRT without video
       let idx = 0;
       const playNext = () => {
-        if (idx >= subtitles.length) {
+        if (!isDubPlaying || idx >= subtitles.length) {
+          isDubPlaying = false;
           document.getElementById("voiceStatusText").textContent = "✅ ចាក់សំឡេងខ្មែររួចរាល់!";
           return;
         }
-        document.getElementById("liveSubCaption").textContent = subtitles[idx].trans;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(subtitles[idx].trans);
-        u.lang = targetLang.speech || "km-KH";
-        u.rate = parseFloat(document.getElementById("speechRate").value || "1.0");
-        u.onend = () => { idx++; playNext(); };
-        window.speechSynthesis.speak(u);
+        const line = subtitles[idx].trans;
+        document.getElementById("liveSubCaption").textContent = line;
+        const rate = parseFloat(document.getElementById("speechRate").value || "1.0");
+        const langCode = (targetLang.code || "KM-KH").split("-")[0].toLowerCase();
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${encodeURIComponent(langCode)}&q=${encodeURIComponent(line)}`;
+        const audio = new Audio(ttsUrl);
+        audio.playbackRate = rate;
+        currentAudio = audio;
+        audio.onended = () => { idx++; playNext(); };
+        audio.onerror = () => { idx++; playNext(); };
+        audio.play().catch(() => { idx++; playNext(); });
       };
       playNext();
     }
   }
 
   function stopKhmerDubbing() {
+    isDubPlaying = false;
     clearInterval(dubInterval);
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
     const fVid = document.getElementById("finalVideo");
     if (fVid && !fVid.paused) fVid.pause();
     document.getElementById("voiceStatusText").textContent = "បានផ្អាកសំឡេង";
   }
 
-  // Generate .SRT Content & Download
   function buildSrtContent(type) {
     return subtitles.map((s, i) => {
       const line = type === "original" ? s.orig : s.trans;
@@ -1343,10 +1423,8 @@
     showToast(`⬇️ បានទាញយក ${a.download}`);
   }
 
-  // Export & Save to Photos App / iOS Share Sheet
   async function exportAndSaveToPhotos() {
     if (videoFile) {
-      // Use Web Share API on iPhone Safari so user can tap "Save Video" directly into Photos App
       if (navigator.canShare && navigator.canShare({ files: [videoFile] })) {
         try {
           await navigator.share({
@@ -1361,7 +1439,6 @@
         }
       }
 
-      // Fallback direct download for browser/Files
       const a = document.createElement("a");
       a.href = videoUrl;
       a.download = `Somray_Khmer_${videoFile.name}`;
@@ -1374,7 +1451,6 @@
     }
   }
 
-  // Settings Modal
   function openSettings() {
     document.getElementById("apiKeyInput").value = localStorage.getItem("somray_gemini_key") || "";
     document.getElementById("settingsModal").classList.add("open");
@@ -1402,7 +1478,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  // Preload voices on iOS/Chrome
   if ("speechSynthesis" in window) {
     window.speechSynthesis.getVoices();
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
